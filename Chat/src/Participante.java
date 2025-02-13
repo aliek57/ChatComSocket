@@ -28,12 +28,12 @@ public class Participante implements Runnable {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
 
-            out.println("Apelido: ");
             apelido = in.readLine();
             logger.log(Level.INFO, "Novo participante {0}", apelido);
 
-            while ((mensagem = in.readLine()) != null) {
-                if (mensagem.equalsIgnoreCase("##sair##")) {
+            while (true) {
+            	mensagem = in.readLine();
+                if (mensagem == null || mensagem.equalsIgnoreCase("##sair##")) {
                     break;
                 }
 
@@ -61,4 +61,9 @@ public class Participante implements Runnable {
     }
     
     public String getApelido() { return apelido; }
+    
+    @Override
+    public String toString() {
+        return "Participante{" + apelido + '}';
+    }
 }

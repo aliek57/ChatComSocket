@@ -20,6 +20,11 @@ public class Servidor {
 	}
 	
 	public void iniciar() {
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+		    logger.log(Level.INFO, "Encerrando o servidor...");
+		    fofoqueiro.shutdownNow();
+		}));
+		
 		try(ServerSocket serverSocket = new ServerSocket(PORTA)) {
 			logger.log(Level.INFO, "Servidor iniciado na porta {0}", PORTA);
 			
@@ -37,17 +42,13 @@ public class Servidor {
 			}
 		} catch (IOException e) {
 			logger.log(Level.SEVERE, "Erro no servidor: ", e);
+		} finally {
+			fofoqueiro.shutdown();
 		}
 	}
 	
 	public void fofocar(ServicoMensagem sm) {
-		synchronized (participantes) {
-			for (Participante participante : participantes) {
-				if (!participante.getApelido().equals(sm.getApelido())) {
-					participante.enviarMensagem(sm.getMensagem());
-				}
-			}
-		}
+		fofoqueiro.submit(sm);
 	}
 	
 	public void removerParticipante(Participante participante) {

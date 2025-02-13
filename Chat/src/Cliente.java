@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 public class Cliente {
 	private static Logger logger = Logger.getLogger(Class.class.getSimpleName());
 	
-	private static final String ENDERECO = "127.0.0.1";
 	private static final int PORTA = 50123;
 	
 	Socket socket;
@@ -19,25 +18,32 @@ public class Cliente {
 	String apelido, mensagem;
 	
 	public static void main(String[] args) {
-		new Cliente().iniciar();
+		if (args.length < 2) {
+            logger.log(Level.SEVERE, "EX: java Cliente <IP_Servidor> <Apelido>");
+            return;
+        }
+        String endereco = args[0];
+        String apelido = args[1];
+        new Cliente().iniciar(endereco, apelido);
 	}
 	
-	public void iniciar() {
+	public void iniciar(String endereco, String apelido) {
 		Scanner scanner = new Scanner(System.in);
 		
 		try {
-			socket = new Socket(ENDERECO, PORTA);
+			socket = new Socket(endereco, PORTA);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
             
-            System.out.print("Digite seu apelido: ");
-            apelido = scanner.nextLine();
+            this.apelido = apelido;
             out.println(apelido);
+            
+            logger.log(Level.INFO, "Conectado ao servidor {0} como {1}", new Object[]{endereco, apelido});
             
             new Thread(new Receptor()).start();
             
             while (true) {
-                System.out.print("Mensagem: ");
+            	logger.log(Level.FINE, "Aguardando usuário escrever");
                 mensagem = scanner.nextLine();
                 
                 if (mensagem.equalsIgnoreCase("##sair##")) {
@@ -46,6 +52,7 @@ public class Cliente {
                 }
                 
                 out.println(mensagem);
+                logger.log(Level.INFO, "{0}: {1}", new Object[]{apelido, mensagem});
             }
 		} catch (IOException e){
 			logger.log(Level.SEVERE, "Erro na comunicação com o servidor: ", e);
@@ -72,7 +79,7 @@ public class Cliente {
             try {
                 String mensagem;
                 while ((mensagem = in.readLine()) != null) {
-                    System.out.println(mensagem);
+                	logger.log(Level.INFO, mensagem);
                 }
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "Erro ao receber mensagem.", e);
