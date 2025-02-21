@@ -54,7 +54,7 @@ public class Participante implements Runnable {
         try {
             servidor.removerParticipante(this);
             socket.close();
-            logger.log(Level.INFO, "Participante " + apelido + " desconectado.");
+            logger.log(Level.INFO, "Participante {0} desconectado.", apelido);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Erro ao fechar conexão com o participante.", e);
         }

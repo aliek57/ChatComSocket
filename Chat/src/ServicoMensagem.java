@@ -17,8 +17,8 @@ public class ServicoMensagem implements Runnable {
 
 	@Override
 	public void run() {
-		String logMsg = String.format("%tF %<tT FINE (%s) - %s", new java.util.Date(), apelido, mensagem);
-	    logger.log(Level.FINE, logMsg);
+		String logMsg = String.format("%1$td/%1$tm/%1$tY %1$tH:%1$tM (%2$s) - %3$s", new java.util.Date(), apelido, mensagem);
+	    logger.log(Level.INFO, logMsg);
 	    
 		synchronized (servidor.getParticipantes()) {
 			for (Participante participante : servidor.getParticipantes()) {

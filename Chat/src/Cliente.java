@@ -43,7 +43,7 @@ public class Cliente {
             new Thread(new Receptor()).start();
             
             while (true) {
-            	logger.log(Level.FINE, "Aguardando usuário escrever");
+            	logger.log(Level.INFO, "Aguardando usuário escrever");
                 mensagem = scanner.nextLine();
                 
                 if (mensagem.equalsIgnoreCase("##sair##")) {
